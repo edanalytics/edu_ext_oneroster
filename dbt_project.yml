@@ -1,0 +1,18 @@
+config-version: 2
+
+name: 'edu_ext_oneroster'
+version: '0.0.1'
+require-dbt-version: [">=1.0.0", "<2.0.0"]
+profile: 'edu_ext_oneroster'
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+models:
+  edu_ext_oneroster:
+    +schema: oneroster
+    +materialized: table
+    +tags: ['oneroster']
