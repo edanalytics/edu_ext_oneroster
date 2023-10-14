@@ -22,6 +22,10 @@ student_school_associations as (
     select * from {{ ref('stg_ef3__student_school_associations')}}
 ),
 
+xwalk_staff_classifications as (
+    select * from {{ ref('xwalk_oneroster_staff_classifications')}}
+),
+
 staff_users_formatted as (
     select
         ssa.k_staff as sourcedId, -- TODO generate a new key to match length?
@@ -38,7 +42,7 @@ staff_users_formatted as (
         '' as identifier,
         staff.email_address as email,
         '' as sms,
-    xwalk_oneroster_staff_classifications.oneroster_role as role,
+    xwalk_staff_classifications.oneroster_role as role,
     from stg_staff_school_associations ssa
     inner join dim_school
         on dim_school.k_school = ssa.k_school
@@ -54,8 +58,8 @@ staff_users_formatted as (
         and ssa.api_year = school_assign.school_year
         and dim_school.k_school = school_assign.k_school
         and school_assign.ed_org_type = 'School'
-    left join xwalk_oneroster_staff_classifications
-        on xwalk_oneroster_staff_classifications.staff_classification = coalesce(school_assign.staff_classification, lea_assign.staff_classification)
+    left join xwalk_staff_classifications
+        on xwalk_staff_classifications.staff_classification = coalesce(school_assign.staff_classification, lea_assign.staff_classification)
 ),
 
 student_users_formatted as (
