@@ -10,10 +10,6 @@ dim_staff as (
     select * from {{ ref('dim_staff') }}
 ),
 
-xwalk_staff_classifications as (
-    select * from {{ ref('xwalk_oneroster_staff_classifications')}}
-),
-
 student_ed_org_associations as (
     select * from {{ ref('stg_ef3__student_education_organization_associations')}}
 ),
@@ -28,12 +24,12 @@ xwalk_staff_classifications as (
 
 staff_users_formatted as (
     select
-        ssa.k_staff as sourcedId, -- TODO generate a new key to match length?
+        ssa.k_staff as sourcedId,
         'active' as status,
         ssa.pull_timestamp as dateLastModified,
         'true' as enabledUsers,
         ssa.k_school as orgSourceIds,
-        'teacher' as role,
+        xwalk_staff_classifications.oneroster_role as role,
         '' as username,
         '' as userIds,
         staff.first_name as givenName,
@@ -42,7 +38,7 @@ staff_users_formatted as (
         '' as identifier,
         staff.email_address as email,
         '' as sms,
-    xwalk_staff_classifications.oneroster_role as role,
+        '' as phone
     from stg_staff_school_associations ssa
     inner join dim_school
         on dim_school.k_school = ssa.k_school
@@ -64,7 +60,7 @@ staff_users_formatted as (
 
 student_users_formatted as (
     select
-        ssa.k_student_xyear as sourcedId, -- TODO generate a new key to match length?
+        ssa.k_student_xyear as sourcedId,
         'active' as status,
         ssa.pull_timestamp as dateLastModified,
         'true' as enabledUser,
@@ -73,8 +69,8 @@ student_users_formatted as (
         '' as username,
         '' as userIds,
         student.first_name as givenName,
-        student.last_name as  familyName,
-        student.middle_name as  middleName,
+        student.last_name as familyName,
+        student.middle_name as middleName,
         '' as identifier,
         seoa.v_electronic_mails:electronicMailAddress as email,
         '' as sms,
