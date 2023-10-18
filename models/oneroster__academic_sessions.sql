@@ -21,13 +21,11 @@ sessions_formatted as (
         s.k_session as sourcedId,
         'active' as status,
         s.pull_timestamp as dateLastModified,
-        {# null as metadata, -- TODO exclude? #}
         s.session_name as title,
+        xtype.type,
         s.session_begin_date as startDate,
         s.session_end_date as endDate,
-        xtype.type,
-        null as parent,
-        null as children, -- TODO do we want to pivot and convert these to a list? likely not necessary
+        {{ dbt_utils.surrogate_key(['tenant_code', 'api_year']) }} as parentSourcedId,
         s.api_year as schoolYear
     from stg_sessions s
     inner join xwalk_session_types xtype
@@ -39,13 +37,11 @@ grading_periods_formatted as (
         gp.k_grading_period as sourcedId,
         'active' as status,
         gp.pull_timestamp as dateLastModified,
-        {# null as metadata, -- TODO exclude? #}
         gp.grading_period as title,
+        'gradingPeriod' as type,
         gp.begin_date as startDate,
         gp.end_date as endDate,
-        'gradingPeriod' as type,
-        sgp.k_session as parent,
-        null as children,
+        sgp.k_session as parentSourcedId,
         gp.api_year as schoolYear
     from stg_grading_periods gp
     inner join stg_sessions_grading_periods sgp

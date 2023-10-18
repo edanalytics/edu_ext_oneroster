@@ -26,10 +26,9 @@ staff_enrollments_formatted as (
         concat(ssa.k_staff, ssa.k_course_section) as sourcedId, -- TODO generate a new key to match length?
         'active' as status,
         ssa.pull_timestamp as dateLastModified,
-        {# null as metadata, -- TODO exclude? #}
-        ssa.k_staff as user,
-        ssa.k_course_section as class,
-        sec.k_school as school,
+        ssa.k_course_section as classSourcedId,
+        sec.k_school as schoolSourcedId,
+        ssa.k_staff as userSourcedId,
         'teacher' as role,
         xwalk.is_primary as primary,
         begin_date as beginDate,
@@ -46,10 +45,9 @@ student_enrollments_formatted as (
         concat(ssa.k_student_xyear, ssa.k_course_section) as sourcedId, -- TODO generate a new key to match length?
         'active' as status,
         ssa.pull_timestamp as dateLastModified,
-        {# null as metadata, -- TODO exclude? #}
-        ssa.k_student_xyear as user,
-        ssa.k_course_section as class,
-        sec.k_school as school,
+        ssa.k_course_section as classSourcedId,
+        sec.k_school as schoolSourcedId,
+        ssa.k_student_xyear as userSourcedId,
         'student' as role,
         false as primary,
         begin_date as beginDate,
