@@ -23,7 +23,7 @@ select
     --     else 'scheduled' end as classType, 
     -- location
     sections.k_school as schoolSourcedId, 
-    crs_offering.k_session as termSourceId
+    crs_offering.k_session as termSourcedIds
     -- subjects
     -- subjectCodes
     -- periods
