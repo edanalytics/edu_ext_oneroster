@@ -19,3 +19,8 @@ OneRoster CSV standard in the EDU framework
 - Columns:
   - `staff_classification`: Comes from the Ed-Fi Staff Ed Org Assignment Associations resource, Staff Classification field.
   - `oneroster_role`: Must be one of the [OneRoster RoleType](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452025) list of values (administrator, aide, guardian, parent, proctor, relative, student, teacher).
+4. Class Type Mapping
+- File name: `xwalk_oneroster_class_type`
+- Columns:
+  - `local_course_code`: Comes from the Ed-Fi courseOfferings resource, Local Course Code field.
+  - `type`: Must be one of the [OneRoster classType](https://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452021) list of values (homeroom, scheduled).
