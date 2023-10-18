@@ -13,3 +13,9 @@ OneRoster CSV standard in the EDU framework
 - Columns:
   - `classroom_position`: Comes from the Ed-Fi Staff Section Associations resource, Classroom Position field.
   - `is_primary`: TRUE if this is the primary teacher role, FALSE otherwise. FALSE for students.
+
+3. Staff Classification Mapping
+- File name: `xwalk_oneroster_staff_classifications`
+- Columns:
+  - `staff_classification`: Comes from the Ed-Fi Staff Ed Org Assignment Associations resource, Staff Classification field.
+  - `oneroster_role`: Must be one of the [OneRoster RoleType](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452025) list of values (administrator, aide, guardian, parent, proctor, relative, student, teacher).
