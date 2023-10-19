@@ -10,6 +10,14 @@ dim_staff as (
     select * from {{ ref('dim_staff') }}
 ),
 
+dim_school as (
+    select * from {{ ref('dim_school')}}
+),
+
+dim_student as (
+    select * from {{ref('dim_student')}}
+),
+
 student_ed_org_associations as (
     select * from {{ ref('stg_ef3__student_education_organization_associations')}}
 ),
@@ -29,7 +37,7 @@ staff_users_formatted as (
         ssa.pull_timestamp as dateLastModified,
         'true' as enabledUsers,
         ssa.k_school as orgSourceIds,
-        xwalk_staff_classifications.oneroster_role as role,
+        'teacher', --xwalk_staff_classifications.oneroster_role as role,
         '' as username,
         '' as userIds,
         staff.first_name as givenName,
