@@ -18,15 +18,15 @@ xwalk_session_types as (
 
 sessions_formatted as (
     select
-        s.k_session as sourcedId,
-        'active' as status,
-        s.pull_timestamp as dateLastModified,
-        s.session_name as title,
-        xtype.type,
-        s.session_begin_date as startDate,
-        s.session_end_date as endDate,
-        {{ dbt_utils.surrogate_key(['tenant_code', 'api_year']) }} as parentSourcedId,
-        s.api_year as schoolYear
+        s.k_session as "sourcedId",
+        'active' as "status",
+        s.pull_timestamp as "dateLastModified",
+        s.session_name as "title",
+        xtype.type as "type",
+        s.session_begin_date as "startDate",
+        s.session_end_date as "endDate",
+        {{ dbt_utils.surrogate_key(['tenant_code', 'api_year']) }} as "parentSourcedId",
+        s.api_year as "schoolYear"
     from stg_sessions s
     inner join xwalk_session_types xtype
         on s.academic_term = xtype.academic_term
@@ -34,15 +34,15 @@ sessions_formatted as (
 
 grading_periods_formatted as (
     select
-        gp.k_grading_period as sourcedId,
-        'active' as status,
-        gp.pull_timestamp as dateLastModified,
-        gp.grading_period as title,
-        'gradingPeriod' as type,
-        gp.begin_date as startDate,
-        gp.end_date as endDate,
-        sgp.k_session as parentSourcedId,
-        gp.api_year as schoolYear
+        gp.k_grading_period as "sourcedId",
+        'active' as "status",
+        gp.pull_timestamp as "dateLastModified",
+        gp.grading_period as "title",
+        'gradingPeriod' as "type",
+        gp.begin_date as "startDate",
+        gp.end_date as "endDate",
+        sgp.k_session as "parentSourcedId",
+        gp.api_year as "schoolYear"
     from stg_grading_periods gp
     inner join stg_sessions_grading_periods sgp
         on gp.k_grading_period = sgp.k_grading_period

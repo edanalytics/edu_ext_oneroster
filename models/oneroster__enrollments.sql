@@ -23,16 +23,16 @@ xwalk_classroom_positions as (
 
 staff_enrollments_formatted as (
     select
-        concat(ssa.k_staff, ssa.k_course_section) as sourcedId, -- TODO generate a new key to match length?
-        'active' as status,
-        ssa.pull_timestamp as dateLastModified,
-        ssa.k_course_section as classSourcedId,
-        sec.k_school as schoolSourcedId,
-        ssa.k_staff as userSourcedId,
-        'teacher' as role,
-        xwalk.is_primary as primary,
-        begin_date as beginDate,
-        end_date as endDate
+        concat(ssa.k_staff, ssa.k_course_section) as "sourcedId",
+        'active' as "status",
+        ssa.pull_timestamp as "dateLastModified",
+        ssa.k_course_section as "classSourcedId",
+        sec.k_school as "schoolSourcedId",
+        ssa.k_staff as "userSourcedId",
+        'teacher' as "role",
+        xwalk.is_primary as "primary",
+        begin_date as "beginDate",
+        end_date as "endDate"
     from stg_staff_section_associations ssa
     inner join stg_sections sec
         on ssa.k_course_section = sec.k_course_section
@@ -42,16 +42,16 @@ staff_enrollments_formatted as (
 
 student_enrollments_formatted as (
     select
-        concat(ssa.k_student_xyear, ssa.k_course_section) as sourcedId, -- TODO generate a new key to match length?
-        'active' as status,
-        ssa.pull_timestamp as dateLastModified,
-        ssa.k_course_section as classSourcedId,
-        sec.k_school as schoolSourcedId,
-        ssa.k_student_xyear as userSourcedId,
-        'student' as role,
-        false as primary,
-        begin_date as beginDate,
-        end_date as endDate
+        concat(ssa.k_student_xyear, ssa.k_course_section) as "sourcedId",
+        'active' as "status",
+        ssa.pull_timestamp as "dateLastModified",
+        ssa.k_course_section as "classSourcedId",
+        sec.k_school as "schoolSourcedId",
+        ssa.k_student_xyear as "userSourcedId",
+        'student' as "role",
+        false as "primary",
+        begin_date as "beginDate",
+        end_date as "endDate"
     from stg_student_section_associations ssa
     inner join stg_sections sec
         on ssa.k_course_section = sec.k_course_section

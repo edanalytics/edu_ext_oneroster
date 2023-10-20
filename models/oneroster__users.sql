@@ -32,21 +32,21 @@ xwalk_staff_classifications as (
 
 staff_users_formatted as (
     select
-        ssa.k_staff as sourcedId,
-        'active' as status,
-        ssa.pull_timestamp as dateLastModified,
-        'true' as enabledUsers,
-        ssa.k_school as orgSourceIds,
-        'teacher', --xwalk_staff_classifications.oneroster_role as role,
-        '' as username,
-        '' as userIds,
-        staff.first_name as givenName,
-        staff.last_name as familyName,
-        staff.middle_name as middleName,
-        '' as identifier,
-        staff.email_address as email,
-        '' as sms,
-        '' as phone
+        ssa.k_staff as "sourcedId",
+        'active' as "status",
+        ssa.pull_timestamp as "dateLastModified",
+        'true' as "enabledUsers",
+        ssa.k_school as "orgSourceIds",
+        xwalk_staff_classifications.oneroster_role as "role",
+        '' as "username",
+        '' as "userIds",
+        staff.first_name as "givenName",
+        staff.last_name as "familyName",
+        staff.middle_name as "middleName",
+        '' as "identifier",
+        staff.email_address as "email",
+        '' as "sms",
+        '' as "phone"
     from stg_staff_school_associations ssa
     inner join dim_school
         on dim_school.k_school = ssa.k_school
@@ -68,21 +68,21 @@ staff_users_formatted as (
 
 student_users_formatted as (
     select
-        ssa.k_student_xyear as sourcedId,
-        'active' as status,
-        ssa.pull_timestamp as dateLastModified,
-        'true' as enabledUser,
-        ssa.k_school as orgSourceIds,
-        'student' as role,
-        '' as username,
-        '' as userIds,
-        student.first_name as givenName,
-        student.last_name as familyName,
-        student.middle_name as middleName,
-        '' as identifier,
-        seoa.v_electronic_mails:electronicMailAddress as email,
-        '' as sms,
-        '' as phone
+        ssa.k_student_xyear as "sourcedId",
+        'active' as "status",
+        ssa.pull_timestamp as "dateLastModified",
+        'true' as "enabledUser",
+        ssa.k_school as "orgSourceIds",
+        'student' as "role",
+        '' as "username",
+        '' as "userIds",
+        student.first_name as "givenName",
+        student.last_name as "familyName",
+        student.middle_name as "middleName",
+        '' as "identifier",
+        seoa.v_electronic_mails:electronicMailAddress as "email",
+        '' as "sms",
+        '' as "phone"
     from student_school_associations ssa
     inner join dim_student student
         on ssa.k_student = student.k_student
