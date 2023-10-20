@@ -29,7 +29,7 @@ sessions_formatted as (
         s.api_year as schoolYear
     from stg_sessions s
     inner join xwalk_session_types xtype
-        on s.session_name = xtype.session_name
+        on s.academic_term = xtype.academic_term
 ),
 
 grading_periods_formatted as (
