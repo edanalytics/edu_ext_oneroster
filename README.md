@@ -24,3 +24,9 @@ OneRoster CSV standard in the EDU framework
 - Columns:
   - `local_course_code`: Comes from the Ed-Fi courseOfferings resource, Local Course Code field.
   - `type`: Must be one of the [OneRoster classType](https://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452021) list of values (homeroom, scheduled).
+
+5. Relation Type Mapping
+- File name: `xwalk_oneroster_relation_type.csv`
+- Columns:
+  - `relation_type`: Comes from the Ed-Fi StudentParentAssociation resource, Relation field.
+  - `oneroster_role`: Must be one of the [OneRoster classType](https://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452025) list of values (administrator, aide, guardian, parent, proctor, relative, student, teacher).

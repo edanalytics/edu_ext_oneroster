@@ -30,6 +30,18 @@ xwalk_staff_classifications as (
     select * from {{ ref('xwalk_oneroster_staff_classifications')}}
 ),
 
+dim_parent as (
+    select * from {{ref('dim_parent')}}
+),
+
+student_parent_associations as (
+    select * from {{ ref('stg_ef3__student_parent_associations')}}
+),
+
+xwalk_relation_types as (
+    select * from {{ ref('xwalk_oneroster_relation_types')}}
+),
+
 staff_users_formatted as (
     select
         ssa.k_staff as "sourcedId",
@@ -46,7 +58,10 @@ staff_users_formatted as (
         '' as "identifier",
         staff.email_address as "email",
         '' as "sms",
-        '' as "phone"
+        '' as "phone",
+        '' as agentSourceIds,
+        '' as grades,
+        '' as password
     from stg_staff_school_associations ssa
     inner join dim_school
         on dim_school.k_school = ssa.k_school
@@ -82,7 +97,10 @@ student_users_formatted as (
         '' as "identifier",
         seoa.v_electronic_mails:electronicMailAddress as "email",
         '' as "sms",
-        '' as "phone"
+        '' as "phone",
+        '' as agentSourceIds,
+        '' as grades,
+        '' as password
     from student_school_associations ssa
     inner join dim_student student
         on ssa.k_student = student.k_student
@@ -90,10 +108,39 @@ student_users_formatted as (
         on ssa.k_student = seoa.k_student
 ),
 
+parent_users_formatted as (
+    select
+        spa.k_parent as "sourcedId",
+        'active' as "status",
+        spa.pull_timestamp as "dateLastModified",
+        'true' as "enabledUsers",
+        '' as "orgSourceIds",
+        xwalk_relation_types.oneroster_role as "role",
+        '' as "username",
+        '' as "userIds",
+        parent.first_name as "givenName",
+        parent.last_name as "familyName",
+        parent.middle_name as "middleName",
+        '' as "identifier",
+        parent.primary_email_address as "email",
+        parent.mobile_phone_number as "sms",
+        parent.home_phone_number as "phone",
+        spa.k_student_xyear as agentSourceIds,
+        '' as grades,
+        '' as password
+    from student_parent_associations spa
+    inner join dim_parent parent
+        on parent.k_parent = spa.k_parent
+    left join xwalk_relation_types
+        on xwalk_relation_types.relation_type = spa.relation_type
+),
+
 stacked as (
     select * from staff_users_formatted
     union
     select * from student_users_formatted
+    union
+    select * from parent_users_formatted
 )
 
 select * from stacked
