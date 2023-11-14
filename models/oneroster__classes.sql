@@ -1,34 +1,45 @@
 with stg_sections as (
     select * from {{ ref('stg_ef3__sections')}}
+    where school_year = {{ var('oneroster:active_school_year')}}
 ),
 stg_course_offering as (
-    select * from {{ ref('stg_ef3__course_offerings')}}
+    -- avoid column ambiguity in next step
+    select 
+        k_course_offering,
+        course_code,
+        local_course_title
+    from {{ ref('stg_ef3__course_offerings')}}
+    where school_year = {{ var('oneroster:active_school_year')}}
 ),
-xwalk_class_type as (
-    select * from {{ ref('xwalk_oneroster_class_type')}}
+periods as (
+    select 
+        k_course_section,
+        listagg(distinct class_period_name, ',') as periods
+    from {{ ref('stg_ef3__sections__class_periods') }} sec
+    join {{ ref('stg_ef3__class_periods')}} per
+        on sec.k_class_period = per.k_class_period
+    where school_year = {{ var('oneroster:active_school_year')}}
+    group by 1
 )
 select 
-    sections.k_course_section as "sourcedId", 
-    'active' as "status",
-    sections.pull_timestamp as "dateLastModified", 
-    crs_offering.local_course_title as "title", 
-    -- grades in v_offered_grade_levels array : also not a required field
-    crs_offering.k_course as "courseSourcedId",
-    crs_offering.local_course_code as "classCode", 
-    class_type.type as classType,
-    -- not sure if this is the right approach, should we xwalk this?
-    -- (ie a join between local_course_code in edfi and xwalk, maybe just a list of homerooms?)
-    -- case 
-    --     when crs_offering.local_course_title ilike 'homeroom%' then 'homeroom'
-    --     else 'scheduled' end as classType, 
-    -- location
-    sections.k_school as "schoolSourcedId", 
-    crs_offering.k_session as "termSourcedIds"
-    -- subjects
-    -- subjectCodes
+    {{ gen_sourced_id('class') }} as "sourcedId", 
+    null::varchar as "status",
+    null::date as "dateLastModified", 
+    crs_offering.local_course_title as "title", -- consider adding section_id here?
+    null::varchar as "grades",
+    {{ gen_sourced_id('course') }} as "courseSourcedId",
+    sections.local_course_code as "classCode", 
+    'scheduled' as "classType", -- do we need a homeroom indicator
+    sections.classroom_identification_code as "location",
+    {{ gen_sourced_id('school') }} as "schoolSourcedId", 
+    {{ gen_sourced_id('session') }} as "termSourcedIds",
+    null::varchar as "subject",
+    null::varchar as "subjectCodes",
+    periods.periods as "periods",
+    sections.tenant_code
     -- periods
 from stg_sections sections
 join stg_course_offering crs_offering
     on sections.k_course_offering = crs_offering.k_course_offering
-join xwalk_class_type class_type 
-    on crs_offering.local_course_code = class_type.local_course_code
+left join periods 
+    on sections.k_course_section = periods.k_course_section

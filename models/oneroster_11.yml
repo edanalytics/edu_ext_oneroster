@@ -1,0 +1,88 @@
+version: 2
+models:
+  - name: oneroster__manifest
+    config: 
+      tags: ['oneroster_1.1']
+  - name: oneroster__academic_sessions
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
+  - name: oneroster__classes
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
+      - name: courseSourcedId
+        tests:
+          - relationships:
+            to: ref('oneroster__courses')
+            field: sourcedId
+      - name: schoolSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__orgs')
+            field: sourcedId
+  - name: oneroster__courses
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
+      - name: orgSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__orgs')
+            field: sourcedId
+      - name: schoolYearSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__academic_sessions')
+            field: sourcedId
+  - name: oneroster__enrollments
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
+      - name: classSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__classes')
+            field: sourcedId
+      - name: schoolSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__orgs')
+            field: sourcedId
+      - name: userSourcedId
+        tests:
+          - relationships: 
+            to: ref('oneroster__users')
+            field: sourcedId
+  - name: oneroster__orgs
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
+  - name: oneroster__users
+    config: 
+      tags: ['oneroster_1.1']
+    columns: 
+      - name: sourcedId
+        tests: 
+          - unique
+          - not_null
