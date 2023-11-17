@@ -20,7 +20,8 @@ role_xwalk as (
 staff_role as (
     select 
         k_staff,
-        oneroster_role
+        oneroster_role,
+        staff_school.staff_classification
     from staff_school
     join role_xwalk
         on staff_school.staff_classification = role_xwalk.staff_classification
@@ -76,6 +77,8 @@ formatted as (
         null::string as "agentSourceIds",
         null:string as "grades",
         null::string as "password",
+        {{ gen_natural_key('staff') }} as "metadata.edu.natural_key",
+        staff_role.staff_classification as "metadata.edu.staffClassification",
         dim_staff.tenant_code
     from dim_staff
     join user_ids 

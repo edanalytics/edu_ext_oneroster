@@ -1,4 +1,4 @@
-{% macro gen_sourced_id(id_type) -%}
+{% macro get_key_list(id_type) -%}
   {% set prefix = var('oneroster:id_prefix', 'tenant_code') %}
     
   {# orgs #}
@@ -13,11 +13,11 @@
 
   {# users #}
   {%- elif id_type == 'student' -%}
-    {% set suffix = 'student_unique_id' %}
+    {% set suffix = ["'STU'", 'student_unique_id'] %}
   {% elif id_type == 'staff' %}
-    {% set suffix = 'staff_unique_id' %}
+    {% set suffix = ["'STA'", 'staff_unique_id'] %}
   {% elif id_type == 'parent' %}
-    {% set suffix = 'parent_unique_id' -%}
+    {% set suffix = ["'PAR'", 'parent_unique_id'] -%}
   
   {# sessions #}
   {%- elif id_type == 'session' -%}
@@ -29,7 +29,7 @@
 
   {# courses #}
   {%- elif id_type == 'course' %}
-    {% set suffix = 'course_code' -%}
+    {% set suffix = ['lea_id', 'course_code'] -%}
   
 
   {# classes #}
@@ -70,5 +70,23 @@
   {%- endif -%}
 
   {%- set key_list = prefix + suffix -%}
-  {{ dbt_utils.surrogate_key(key_list) }}
+  {{ return(key_list) }}
 {%- endmacro %}
+
+{% macro gen_sourced_id(id_type) -%}
+  {{ dbt_utils.surrogate_key(get_key_list(id_type)) }}
+{% endmacro %}
+
+{% macro gen_natural_key(id_type) -%}
+  {%- set fields = [] -%}
+  {%- for field in get_key_list(id_type) -%}
+    {%- do fields.append(
+        "coalesce(cast(" ~ field ~ " as " ~ dbt.type_string() ~ "), '" ~ ""  ~"')"
+    ) -%}
+
+    {%- if not loop.last %}
+        {%- do fields.append("'-'") -%}
+    {%- endif -%}
+  {% endfor %}
+  {{ dbt.concat(fields)}}
+{% endmacro %}

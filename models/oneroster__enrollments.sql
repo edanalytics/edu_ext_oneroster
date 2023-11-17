@@ -28,6 +28,7 @@ staff_enrollments_formatted as (
         xwalk.is_primary::boolean as "primary",
         begin_date as "beginDate",
         end_date as "endDate",
+        {{ gen_natural_key('staff_enr') }} as "metadata.edu.natural_key",
         ssa.tenant_code
     from stg_staff_section_associations ssa
     left join xwalk_classroom_positions xwalk
@@ -46,6 +47,7 @@ student_enrollments_formatted as (
         false as "primary",
         begin_date as "beginDate",
         end_date as "endDate",
+        {{ gen_natural_key('stu_enr') }} as "metadata.edu.natural_key",
         ssa.tenant_code
     from stg_student_section_associations ssa
 )

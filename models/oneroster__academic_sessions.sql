@@ -1,5 +1,8 @@
 with stg_sessions as (
-    select * from {{ ref('stg_ef3__sessions') }}
+    select ses.*, sch.lea_id 
+    from {{ ref('stg_ef3__sessions') }} ses 
+    join {{ ref('stg_ef3__schools') }} sch
+        on ses.k_school = sch.k_school
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
 calendar_windows as (
@@ -40,6 +43,7 @@ create_school_year as (
         last_school_day as "endDate",
         null::varchar as "parentSourcedId",
         school_year as "schoolYear",
+        {{ gen_natural_key('school_year') }} as "metadata.edu.natural_key",
         tenant_code
     from summarize_school_year
 ),
@@ -54,6 +58,7 @@ sessions_formatted as (
         stg_sessions.session_end_date as "endDate",
         {{ gen_sourced_id('school_year') }} as "parentSourcedId",
         stg_sessions.api_year as "schoolYear",
+        {{ gen_natural_key('session') }} as "metadata.edu.natural_key",
         stg_sessions.tenant_code
     from stg_sessions
     left join xwalk_session_types xtype

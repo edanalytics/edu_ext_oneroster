@@ -7,8 +7,11 @@ stg_course_offering as (
     select 
         k_course_offering,
         course_code,
+        lea_id,
         local_course_title
-    from {{ ref('stg_ef3__course_offerings')}}
+    from {{ ref('stg_ef3__course_offerings')}} off 
+    join {{ ref('stg_ef3__schools') }} sch 
+        on off.k_school = sch.k_school
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
 periods as (
@@ -36,6 +39,7 @@ select
     null::varchar as "subject",
     null::varchar as "subjectCodes",
     periods.periods as "periods",
+    {{ gen_natural_key('class') }} as "metadata.edu.natural_key",
     sections.tenant_code
     -- periods
 from stg_sections sections

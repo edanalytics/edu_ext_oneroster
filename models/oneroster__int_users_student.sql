@@ -67,6 +67,8 @@ formatted as (
         null::string as "agentSourceIds",
         grade_level_xwalk.oneroster_grade_level as "grades",
         null::string as "password",
+        {{ gen_natural_key('student') }} as "metadata.edu.natural_key",
+        null::string as "metadata.edu.staffClassfication",
         dim_student.tenant_code
     from dim_student
     -- note that this join expands the grain by district in certain cases
