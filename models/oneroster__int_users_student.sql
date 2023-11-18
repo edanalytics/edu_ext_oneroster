@@ -27,6 +27,15 @@ user_ids as (
     where api_year = {{ var('oneroster:active_school_year')}}
     group by all
 ),
+student_email as (
+    {{ 
+        edu_wh.row_pluck(ref('stg_ef3__stu_ed_org__emails'),
+                key='k_student',
+                column='email_type',
+                preferred=var('oneroster:student_email_type', 'Home/Personal'),
+                where='(do_not_publish is null or not do_not_publish)') 
+    }}
+),
 
 student_orgs as (
     select 
@@ -55,13 +64,13 @@ formatted as (
         true as "enabledUser", --todo look at active enroll
         student_orgs_agg.orgs as "orgSourcedIds",
         'student' as "role",
-        null::varchar as "username", --dim_student.email_address as "username",
+        null::varchar as "username",
         user_ids.ids as "userIds",
         dim_student.first_name as "givenName",
         dim_student.last_name as "familyName",
         dim_student.middle_name as "middleName",
         dim_student.student_unique_id as "identifier",
-        null::varchar as "email", --dim_student.email_address as "email",
+        student_email.email_address as "email",
         null::string as "sms",
         null::string as "phone",
         null::string as "agentSourceIds",
@@ -77,6 +86,9 @@ formatted as (
     join user_ids
         on dim_student.k_student = user_ids.k_student
         and student_orgs_agg.k_lea = user_ids.k_lea
+    left join student_email 
+        on dim_student.k_student = student_email.k_student 
+        and student_orgs_agg.k_lea = student_email.k_lea
     left join grade_level_xwalk 
         on dim_student.grade_level = grade_level_xwalk.edfi_grade_level
 )
