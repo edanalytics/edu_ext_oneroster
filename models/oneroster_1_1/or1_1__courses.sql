@@ -1,3 +1,8 @@
+{{
+  config(
+    alias='courses'
+    )
+}}
 with stg_courses as (
     select * from {{ ref('stg_ef3__courses')}}
     where school_year = {{ var('oneroster:active_school_year')}}

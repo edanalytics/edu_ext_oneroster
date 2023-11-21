@@ -1,3 +1,8 @@
+{{
+  config(
+    alias='enrollments'
+    )
+}}
 with stg_staff_section_associations as (
     select * from {{ ref('stg_ef3__staff_section_associations') }}
     where school_year = {{ var('oneroster:active_school_year')}}

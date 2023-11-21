@@ -1,6 +1,7 @@
 {{
   config(
-    tags = ['bypass_rls']
+    tags = ['bypass_rls'],
+    alias = 'manifest'
     )
 }}
 select 

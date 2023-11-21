@@ -1,3 +1,8 @@
+{{
+  config(
+    alias='classes'
+    )
+}}
 with stg_sections as (
     select * from {{ ref('stg_ef3__sections')}}
     where school_year = {{ var('oneroster:active_school_year')}}

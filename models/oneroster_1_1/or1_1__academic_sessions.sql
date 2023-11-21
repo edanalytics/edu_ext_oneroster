@@ -1,3 +1,8 @@
+{{
+  config(
+    alias='academic_sessions'
+    )
+}}
 with stg_sessions as (
     select ses.*, sch.lea_id 
     from {{ ref('stg_ef3__sessions') }} ses 
@@ -53,7 +58,7 @@ sessions_formatted as (
         null::varchar as "status",
         null::date as "dateLastModified",
         stg_sessions.academic_term as "title",
-        xtype.type as "type", -- ej: hard-code to 'term'?
+        xtype.type as "type", -- todo: hard-code to 'term'?
         stg_sessions.session_begin_date as "startDate",
         stg_sessions.session_end_date as "endDate",
         {{ gen_sourced_id('school_year') }} as "parentSourcedId",

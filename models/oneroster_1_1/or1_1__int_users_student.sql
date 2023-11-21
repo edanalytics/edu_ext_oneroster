@@ -51,7 +51,7 @@ student_orgs_agg as (
     select 
         k_student,
         k_lea,
-        listagg({{ gen_sourced_id('school') }}, ',') as orgs --todo
+        listagg({{ gen_sourced_id('school') }}, ',') as orgs
     from student_orgs
     group by all
 ),
@@ -61,7 +61,7 @@ formatted as (
         {{ gen_sourced_id('student') }} as "sourcedId",
         null::string as "status",
         null::date as "dateLastModified",
-        true as "enabledUser", --todo look at active enroll
+        true as "enabledUser", 
         student_orgs_agg.orgs as "orgSourcedIds",
         'student' as "role",
         null::varchar as "username",

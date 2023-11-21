@@ -13,6 +13,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   edu_ext_oneroster:
-    +schema: oneroster
-    +materialized: table
-    +tags: ['oneroster']
+    oneroster_1_1:
+      +schema: oneroster_1_1
+      +materialized: table
+      +tags: ['oneroster']

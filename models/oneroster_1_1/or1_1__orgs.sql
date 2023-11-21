@@ -1,3 +1,8 @@
+{{
+  config(
+    alias='orgs'
+    )
+}}
 with schools as (
     select * from {{ ref('stg_ef3__schools') }}
 ),

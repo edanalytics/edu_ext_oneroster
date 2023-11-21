@@ -1,9 +1,9 @@
 version: 2
 models:
-  - name: oneroster__manifest
+  - name: or1_1__manifest
     config: 
       tags: ['oneroster_1.1']
-  - name: oneroster__academic_sessions
+  - name: or1_1__academic_sessions
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -12,7 +12,13 @@ models:
             - sourcedId 
             - TENANT_CODE
           quote_columns: true
-  - name: oneroster__classes
+    columns: 
+      - name: type
+        quote: true 
+        tests: 
+          - accepted_values: 
+              values: ['gradingPeriod', 'semester', 'schoolYear', 'term']
+  - name: or1_1__classes
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -26,15 +32,20 @@ models:
         quote: true
         tests:
           - relationships:
-              to: ref('oneroster__courses')
+              to: ref('or1_1__courses')
               field: '"sourcedId"'
       - name: schoolSourcedId
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__orgs')
+              to: ref('or1_1__orgs')
               field: '"sourcedId"'
-  - name: oneroster__courses
+      - name: classType
+        quote: true 
+        tests: 
+          - accepted_values: 
+              values: ['homeroom', 'scheduled']
+  - name: or1_1__courses
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -48,15 +59,15 @@ models:
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__orgs')
+              to: ref('or1_1__orgs')
               field: '"sourcedId"'
       - name: schoolYearSourcedId
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__academic_sessions')
+              to: ref('or1_1__academic_sessions')
               field: '"sourcedId"'
-  - name: oneroster__enrollments
+  - name: or1_1__enrollments
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -70,21 +81,21 @@ models:
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__classes')
+              to: ref('or1_1__classes')
               field: '"sourcedId"'
       - name: schoolSourcedId
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__orgs')
+              to: ref('or1_1__orgs')
               field: '"sourcedId"'
       - name: userSourcedId
         quote: true
         tests:
           - relationships: 
-              to: ref('oneroster__users')
+              to: ref('or1_1__users')
               field: '"sourcedId"'
-  - name: oneroster__orgs
+  - name: or1_1__orgs
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -93,7 +104,13 @@ models:
             - sourcedId 
             - TENANT_CODE
           quote_columns: true
-  - name: oneroster__users
+    columns: 
+      - name: type
+        quote: true 
+        tests: 
+          - accepted_values: 
+              values: ['department', 'school', 'district', 'local', 'state', 'national']
+  - name: or1_1__users
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -102,3 +119,9 @@ models:
             - sourcedId 
             - TENANT_CODE
           quote_columns: true
+    columns: 
+      - name: role
+        quote: true 
+        tests: 
+          - accepted_values: 
+              values: ['administrator', 'aide', 'guardian', 'parent', 'proctor', 'relative', 'student', 'teacher']
