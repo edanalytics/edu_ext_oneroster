@@ -58,7 +58,7 @@ sessions_formatted as (
         null::varchar as "status",
         null::date as "dateLastModified",
         stg_sessions.academic_term as "title",
-        xtype.type as "type", -- todo: hard-code to 'term'?
+        xtype.type as "type", 
         stg_sessions.session_begin_date as "startDate",
         stg_sessions.session_end_date as "endDate",
         {{ gen_sourced_id('school_year') }} as "parentSourcedId",
