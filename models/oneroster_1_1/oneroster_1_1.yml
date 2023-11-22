@@ -1,9 +1,13 @@
 version: 2
 models:
   - name: or1_1__manifest
+    description: '{{ doc("manifest") }}'
     config: 
       tags: ['oneroster_1.1']
+
+
   - name: or1_1__academic_sessions
+    description: '{{ doc("academic_sessions") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -13,12 +17,17 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: type
         quote: true 
         tests: 
           - accepted_values: 
               values: ['gradingPeriod', 'semester', 'schoolYear', 'term']
+
+          
   - name: or1_1__classes
+    description: '{{ doc("classes") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -28,6 +37,8 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: courseSourcedId
         quote: true
         tests:
@@ -45,7 +56,10 @@ models:
         tests: 
           - accepted_values: 
               values: ['homeroom', 'scheduled']
+
+
   - name: or1_1__courses
+    description: '{{ doc("courses") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -55,6 +69,8 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: orgSourcedId
         quote: true
         tests:
@@ -67,7 +83,10 @@ models:
           - relationships: 
               to: ref('or1_1__academic_sessions')
               field: '"sourcedId"'
+
+
   - name: or1_1__enrollments
+    description: '{{ doc("enrollments") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -77,6 +96,8 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: classSourcedId
         quote: true
         tests:
@@ -95,7 +116,10 @@ models:
           - relationships: 
               to: ref('or1_1__users')
               field: '"sourcedId"'
+ 
+ 
   - name: or1_1__orgs
+    description: '{{ doc("orgs") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -105,12 +129,17 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: type
         quote: true 
         tests: 
           - accepted_values: 
               values: ['department', 'school', 'district', 'local', 'state', 'national']
+
+
   - name: or1_1__users
+    description: '{{ doc("users") }}'
     config: 
       tags: ['oneroster_1.1']
     tests:
@@ -120,6 +149,8 @@ models:
             - TENANT_CODE
           quote_columns: true
     columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
       - name: role
         quote: true 
         tests: 

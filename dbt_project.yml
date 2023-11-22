@@ -5,6 +5,8 @@ version: '0.0.1'
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 profile: 'edu_ext_oneroster'
 
+docs-paths: ["docs"]
+
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
