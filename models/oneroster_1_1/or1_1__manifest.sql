@@ -4,21 +4,23 @@
     alias = 'manifest'
     )
 }}
-select 
-    '1.0' as "manifest.version",
-    '1.1' as "oneroster.version",
-    'bulk' as "file.academicSessions",
-    'absent' as "file.categories",
-    'bulk' as "file.classes",
-    'absent' as "file.classResources",
-    'bulk' as "file.courses",
-    'absent' as "file.courseResources",
-    'absent' as "file.demographics",
-    'bulk' as "file.enrollments",
-    'absent' as "file.lineItems",
-    'bulk' as "file.orgs",
-    'absent' as "file.resources",
-    'absent' as "file.results",
-    'bulk' as "file.users",
-    'enabledataunion' as "file.systemName",
-    'edu' as "file.systemCode"
+select $1 as "propertyName", $2 as "value"
+from (values 
+    ('manifest.version', '1.0'),
+    ('oneroster.version', '1.1'),
+    ('file.academicSessions', 'bulk'),
+    ('file.categories', 'absent'),
+    ('file.classes', 'bulk'),
+    ('file.classResources', 'absent'),
+    ('file.courses', 'bulk'),
+    ('file.courseResources', 'absent'),
+    ('file.demographics', 'absent'),
+    ('file.enrollments', 'bulk'),
+    ('file.lineItems', 'absent'),
+    ('file.orgs', 'bulk'),
+    ('file.resources', 'absent'),
+    ('file.results', 'absent'),
+    ('file.users', 'bulk'),
+    ('file.systemName', 'enabledataunion'),
+    ('file.systemCode', 'edu')
+  )
