@@ -22,7 +22,7 @@ schools_formatted as (
         null::date as "dateLastModified",
         school_name as "name",
         'school' as "type",
-        null::string as "identifier",
+        school_id as "identifier",
         {{ gen_sourced_id('lea') }} as "parentSourcedId",
         {{ gen_natural_key('school') }} as "metadata.edu.natural_key",
         tenant_code
@@ -36,7 +36,7 @@ leas_formatted as (
         null::date as "dateLastModified",
         lea_name as "name",
         'district' as "type",
-        null::string as "identifier",
+        lea_id as "identifier",
         {# gen_sourced_id('sea') as "parentSourcedId", #}
         null::string as "parentSourcedId", --tmp: pending update in edu_edfi_source
         {{ gen_natural_key('lea') }} as "metadata.edu.natural_key",
@@ -51,7 +51,7 @@ seas_formatted as (
         null::date as "dateLastModified",
         sea_name as "name",
         'state' as "type",
-        null::string as "identifier",
+        sea_id as "identifier",
         null::string as "parentSourcedId", --todo
         {{ gen_natural_key('sea') }} as "metadata.edu.natural_key",
         tenant_code
