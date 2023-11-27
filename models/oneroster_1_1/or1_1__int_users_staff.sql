@@ -78,7 +78,7 @@ formatted as (
         null:string as "grades",
         null::string as "password",
         {{ gen_natural_key('staff') }} as "metadata.edu.natural_key",
-        staff_role.staff_classification as "metadata.edu.staffClassification",
+        staff_role.staff_classification as "metadata.edu.staff_classification",
         dim_staff.tenant_code
     from dim_staff
     join user_ids 
