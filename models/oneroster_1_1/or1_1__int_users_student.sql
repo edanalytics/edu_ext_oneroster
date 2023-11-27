@@ -42,7 +42,8 @@ student_orgs as (
         k_student,
         dim_school.k_lea,
         dim_school.k_school,
-        dim_school.school_id
+        dim_school.school_id,
+        student_school.tenant_code
     from student_school
     join dim_school 
         on student_school.k_school = dim_school.k_school
@@ -55,10 +56,16 @@ student_orgs_agg as (
     from student_orgs
     group by all
 ),
-
+student_keys as (
+    select 
+        k_student,
+        {{ gen_sourced_id('student') }} as sourced_id,
+        {{ gen_natural_key('student') }} as natural_key
+    from dim_student
+),
 formatted as (
     select 
-        {{ gen_sourced_id('student') }} as "sourcedId",
+        student_keys.sourced_id as "sourcedId",
         null::string as "status",
         null::date as "dateLastModified",
         true as "enabledUser", 
@@ -76,10 +83,12 @@ formatted as (
         null::string as "agentSourceIds",
         grade_level_xwalk.oneroster_grade_level as "grades",
         null::string as "password",
-        {{ gen_natural_key('student') }} as "metadata.edu.natural_key",
-        null::string as "metadata.edu.staffClassfication",
+        student_keys.natural_key as "metadata.edu.natural_key",
+        null::string as "metadata.edu.staff_classfication",
         dim_student.tenant_code
     from dim_student
+    join student_keys 
+        on dim_student.k_student = student_keys.k_student
     -- note that this join expands the grain by district in certain cases
     join student_orgs_agg
         on dim_student.k_student = student_orgs_agg.k_student

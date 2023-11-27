@@ -26,6 +26,75 @@ OneRoster CSV standard in the EDU framework
   database. The tables are _not_ specified with case-sensitivity, but files
   created from them should be.
 
+## Unique Keys
+OneRoster uses the term `SourcedId` to refer to the unique key of all files in the OneRoster standard. This implementation uses the following methodology and principles:
+- All unique keys are the MD5 hash of a concatenation of Natural key values, separated by hyphens (`-`).
+- For clarity/transparency, the literal string value that is hashed is included in the file as an extension column called `metadata.edu.natural_key`
+- By default, all natural keys are prefixed with `tenant_code`, which is a human-readable string identifying a district. This can be overridden to be a constant string if desired using the variable `oneroster:id_prefix`
+- Any natural key component that is non-integer is cast to lower-case for consistency
+
+The natural keys for each resource are defined in the macro [gen_sourced_id](macros/gen_sourced_id.sql), but are written out below for clarity.
+
+### Org
+- tenant_code (or constant string, if configured)
+- ed_org_id (`sea_id`, `lea_id`, or `school_id`, for the respective org-types)
+
+### Users
+- tenant_code (or constant string, if configured)
+- The literal string `STU`, `STA`, or `PAR`, for students, staff, or parents
+- `student_unique_id`, `staff_unique_id`, or `parent_unique_id`, respectively
+  - Note that this is the unique person identifier configured in Ed-Fi, and exactly which type of ID this is can vary across implementations.
+
+### Sessions
+For terms/semesters/etc, this is a school-specific session definition, taken
+from Ed-Fi's definition of Sessions.
+- tenant_code (or constant string, if configured)
+- school_id
+- session_name
+
+For school years, each district has its own definition:
+- tenant_code (or constant string, if configured)
+- lea_id
+- school_year (4 digit number representing the Spring year, e.g. for 2023-2024, `2024`)
+
+### Courses
+- tenant_code (or constant string, if configured)
+- lea_id
+- course_code
+
+### Classes
+- tenant_code (or constant string, if configured)
+- school_id
+- lower(section_id)
+- lower(session_name)
+
+Section ID and Session Name are cast to lower case to ensure consistency.
+Session is included in the Class definition to align with how Ed-Fi thinks about
+Sections, as well as because Ed-Fi Sessions are not date-exclusive and using dates
+alone may not uniquely identify the session in which a Section is offered.
+
+### Enrollments
+Student Enrollments are a `student_unique_id`, the `local_course_code` from Ed-Fi's `CourseOffering`, the unique key of a Class, plus the `begin_date`. Note that students may enter and exit the same Class multiple times,
+requiring the presence of `begin_date` in the enrollment record.
+- tenant_code (or constant string, if configured)
+- student_unique_id
+- lower(local_course_code)
+- school_id
+- lower(section_id)
+- lower(session_name)
+- begin_date
+
+Staff enrollments are the same, but substituting staff_unique_id
+- tenant_code (or constant string, if configured)
+- staff_unique_id
+- lower(local_course_code)
+- school_id
+- lower(section_id)
+- lower(session_name)
+- begin_date
+
+
+
 ## Required Seed Files
 Templates for required seed files are located in the [seed_templates](seed_templates/)
 
@@ -65,6 +134,6 @@ OneRoster is an extensible standard. Extensions in this package begin with `meta
 
 `metadata.edu.natural_key`: All sourcedIds in this implementation are an MD5 hash of an underlying natural key. The definitions of the columns included in that key are in the [gen_sourced_id macro](macros/gen_sourced_id.sql). The unhashed string is included for clarity in this extension.
 
-`metadata.edu.staffClassification`: The Ed-Fi Staff Classification field, for more
+`metadata.edu.staff_classification`: The Ed-Fi Staff Classification field, for more
 detailed role information. Since Ed-Fi permits multiple staffClassifications, 
 but OneRoster 1.1 does not, we have to choose one.
