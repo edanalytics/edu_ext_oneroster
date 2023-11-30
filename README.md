@@ -1,6 +1,10 @@
 # edu_ext_oneroster
 OneRoster CSV standard in the EDU framework
 
+## License
+This package is free to use for noncommercial purposes. 
+See [License](LICENSE.md).
+
 ## Implementation notes
 - SourcedIds are MD5 hashes of an underlying natural key defined in [gen_sourced_id](macros/gen_sourced_id.sql).
 - User SourcedIds are forced to contain a prefix distinguishing between role. 
