@@ -37,7 +37,7 @@ leas_formatted as (
         lea_name as "name",
         'district' as "type",
         lea_id as "identifier",
-        gen_sourced_id('sea') as "parentSourcedId",
+        {{ gen_sourced_id('sea') }} as "parentSourcedId",
         {{ gen_natural_key('lea') }} as "metadata.edu.natural_key",
         tenant_code
     from leas
