@@ -10,6 +10,8 @@
     {% set suffix = 'school_id' %}
   {% elif id_type == 'edorg' %}
     {%- set suffix = 'ed_org_id' -%}
+  {% elif id_type == 'dept' %}
+    {%- set suffix = ['ed_org_id', 'department_name'] -%}
 
   {# users #}
   {%- elif id_type == 'student' -%}
