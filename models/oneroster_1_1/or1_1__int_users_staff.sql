@@ -85,7 +85,7 @@ formatted as (
         on dim_staff.k_staff = user_ids.k_staff
     join staff_role
         on dim_staff.k_staff = staff_role.k_staff
-    join staff_orgs_agg 
+    left join staff_orgs_agg 
         on dim_staff.k_staff = staff_orgs_agg.k_staff
 )
 select * from formatted
