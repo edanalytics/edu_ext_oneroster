@@ -14,19 +14,30 @@ staff_school as (
     -- only consider configured active school year
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
+
+-- find staff who teach sections this year, regardless of classification
+teaching_staff as (
+    select distinct k_staff  
+    from {{ ref('fct_staff_section_association') }}
+    where school_year = {{ var('oneroster:active_school_year')}}
+),
 role_xwalk as (
     select * from {{ ref('xwalk_oneroster_staff_classifications') }}
 ),
 staff_role as (
     select 
-        k_staff,
-        oneroster_role,
-        staff_school.staff_classification
+        staff_school.k_staff,
+        coalesce(oneroster_role, 'teacher') as oneroster_role,
+        coalesce(staff_school.staff_classification, 'Teacher') as staff_classification
     from staff_school
-    join role_xwalk
+    left join role_xwalk
         on staff_school.staff_classification = role_xwalk.staff_classification
+    left join teaching_staff 
+        on staff_school.k_staff = teaching_staff.k_staff
+    -- either in the staff xwalk, or teaches a section
+    where (role_xwalk.staff_classification is not null or teaching_staff.k_staff is not null)
     -- only one role per staff. if multiple, prefer admin over teacher
-    qualify 1 = row_number() over(partition by k_staff order by oneroster_role)
+    qualify 1 = row_number() over(partition by staff_school.k_staff order by oneroster_role)
 ),
 
 user_ids as (
@@ -85,7 +96,7 @@ formatted as (
         on dim_staff.k_staff = user_ids.k_staff
     join staff_role
         on dim_staff.k_staff = staff_role.k_staff
-    join staff_orgs_agg 
+    left join staff_orgs_agg 
         on dim_staff.k_staff = staff_orgs_agg.k_staff
 )
 select * from formatted
