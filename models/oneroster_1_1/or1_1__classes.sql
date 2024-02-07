@@ -17,7 +17,7 @@ stg_course_offering as (
     from {{ ref('stg_ef3__course_offerings')}} off 
     join {{ ref('stg_ef3__schools') }} sch 
         on off.k_school = sch.k_school
-    where school_year = {{ var('oneroster:active_school_year')}}
+    where school_year = {{ var('oneroster:active_school_year') }}
 ),
 periods as (
     select 
@@ -26,7 +26,7 @@ periods as (
     from {{ ref('stg_ef3__sections__class_periods') }} sec
     join {{ ref('stg_ef3__class_periods')}} per
         on sec.k_class_period = per.k_class_period
-    where school_year = {{ var('oneroster:active_school_year')}}
+    where school_year = {{ var('oneroster:active_school_year') }}
     group by 1
 )
 select 

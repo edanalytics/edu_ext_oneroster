@@ -141,3 +141,26 @@ OneRoster is an extensible standard. Extensions in this package begin with `meta
 `metadata.edu.staff_classification`: The Ed-Fi Staff Classification field, for more
 detailed role information. Since Ed-Fi permits multiple staffClassifications, 
 but OneRoster 1.1 does not, we have to choose one.
+
+### Department Organizations
+OneRoster allows for a type of Education Organization called a `department`.
+While the meaning and intended use of this is pretty loose, one use to which it 
+can be put is adding another level of organization to courses: rather than have 
+a flat list of all courses offered within a district, one can organize them into
+subject-level departments. This can aid in navigating lists of courses, as it 
+subdivides the list into more manageable units.
+
+By default this package organizes Courses by the Education Organization 
+that owns it in Ed-Fi. However we can enable departmental sorting with a 
+configuration like this:
+
+```
+# enable the Course Departments feature
+'oneroster:use_course_departments': true
+# set the column name that will be used to define departments (must be in `dim_course`)
+'oneroster:course_dept_column': academic_subject
+```
+
+This will create a new set of `department` organizations within `orgs`: one for 
+each Academic Subject offered by each Ed Org, and will link the courses to this 
+department rather than the defining Ed Org. 

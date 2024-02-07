@@ -22,7 +22,7 @@ schools_formatted as (
         null::date as "dateLastModified",
         school_name as "name",
         'school' as "type",
-        school_id as "identifier",
+        school_id::string as "identifier",
         {{ gen_sourced_id('lea') }} as "parentSourcedId",
         {{ gen_natural_key('school') }} as "metadata.edu.natural_key",
         tenant_code
@@ -36,7 +36,7 @@ leas_formatted as (
         null::date as "dateLastModified",
         lea_name as "name",
         'district' as "type",
-        lea_id as "identifier",
+        lea_id::string as "identifier",
         {{ gen_sourced_id('sea') }} as "parentSourcedId",
         {{ gen_natural_key('lea') }} as "metadata.edu.natural_key",
         tenant_code
@@ -50,12 +50,29 @@ seas_formatted as (
         null::date as "dateLastModified",
         sea_name as "name",
         'state' as "type",
-        sea_id as "identifier",
+        sea_id::string as "identifier",
         null::string as "parentSourcedId", --todo
         {{ gen_natural_key('sea') }} as "metadata.edu.natural_key",
         tenant_code
     from seas
 ),
+
+{% if var('oneroster:use_course_departments', false) %}
+  
+departments_formatted as (
+    select distinct
+        {{ gen_sourced_id('dept') }} as "sourcedId",
+        null::string as "status",
+        null::date as "dateLastModified",
+        department_name as "name",
+        'department' as "type",
+        department_name as "identifier",
+        {{ gen_natural_key('edorg') }} as "parentSourcedId",
+        {{ gen_natural_key('dept') }} as "metadata.edu.natural_key",
+        tenant_code
+    from {{ ref('or1_1__department_helper') }}
+),
+{% endif %}
 
 stacked as (
     select * from schools_formatted
@@ -63,5 +80,9 @@ stacked as (
     select * from leas_formatted
     union all 
     select * from seas_formatted
+    {% if var('oneroster:use_course_departments', false) %}
+    union all 
+    select * from departments_formatted
+    {% endif %}
 )
 select * from stacked

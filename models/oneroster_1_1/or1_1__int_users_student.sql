@@ -90,9 +90,9 @@ formatted as (
     join student_keys 
         on dim_student.k_student = student_keys.k_student
     -- note that this join expands the grain by district in certain cases
-    join student_orgs_agg
+    left join student_orgs_agg
         on dim_student.k_student = student_orgs_agg.k_student
-    join user_ids
+    left join user_ids
         on dim_student.k_student = user_ids.k_student
         and student_orgs_agg.k_lea = user_ids.k_lea
     left join student_email 
