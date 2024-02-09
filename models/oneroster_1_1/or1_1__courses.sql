@@ -9,16 +9,18 @@
     {% set orgtype = 'dept' %}
 {%- endif -%}
 with stg_courses as (
-    select * from {{ ref('stg_ef3__courses')}}
-    where school_year = {{ var('oneroster:active_school_year')}}
+    select * from {{ ref('stg_ef3__courses') }}
+    where school_year = {{ var('oneroster:active_school_year') }}
 ),
 -- want courses defined by district, so grab this from offerings and reduce down
 course_leas as (
     select distinct k_course, lea_id 
-    from {{ ref('stg_ef3__course_offerings')}} as co 
+    from {{ ref('stg_ef3__course_offerings') }} as co 
     join {{ ref('stg_ef3__schools') }} as s 
         on co.k_school = s.k_school
-    where school_year = {{ var('oneroster:active_school_year')}}
+    where school_year = {{ var('oneroster:active_school_year') }}
+
+{% if var('oneroster:use_course_departments', false) %}
 ),
 clean_up_depts as (
     select 
@@ -26,6 +28,7 @@ clean_up_depts as (
         k_course,
         department_name
     from {{ ref('or1_1__department_helper') }}
+{%- endif -%}
 )
 select 
     {{ gen_sourced_id('course') }} as "sourcedId",
