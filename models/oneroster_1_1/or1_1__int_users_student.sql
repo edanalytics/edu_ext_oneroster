@@ -71,7 +71,7 @@ formatted as (
         true as "enabledUser", 
         student_orgs_agg.orgs as "orgSourcedIds",
         'student' as "role",
-        null::varchar as "username",
+        student_email.email_address as "username",
         user_ids.ids as "userIds",
         dim_student.first_name as "givenName",
         dim_student.last_name as "familyName",
