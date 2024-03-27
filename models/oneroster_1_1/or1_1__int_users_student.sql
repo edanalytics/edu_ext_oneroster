@@ -51,7 +51,6 @@ student_orgs as (
 student_orgs_agg as (
     select 
         k_student,
-        k_lea,
         listagg({{ gen_sourced_id('school') }}, ',') as orgs
     from student_orgs
     group by all
@@ -89,7 +88,6 @@ formatted as (
     from dim_student
     join student_keys 
         on dim_student.k_student = student_keys.k_student
-    -- note that this join expands the grain by district in certain cases
     left join student_orgs_agg
         on dim_student.k_student = student_orgs_agg.k_student
     left join user_ids
