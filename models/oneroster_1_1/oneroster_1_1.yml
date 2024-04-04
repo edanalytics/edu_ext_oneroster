@@ -156,3 +156,22 @@ models:
         tests: 
           - accepted_values: 
               values: ['administrator', 'aide', 'guardian', 'parent', 'proctor', 'relative', 'student', 'teacher']
+
+  - name: or1_1__descriptors
+    description: '{{ doc("demographics") }}'
+    config: 
+      tags: ['oneroster_1.1']
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - sourcedId 
+            - TENANT_CODE
+          quote_columns: true
+    columns: 
+      - name: tenant_code 
+        description: '{{ doc("tenant_code") }}'
+      - name: sex
+        quote: true 
+        tests: 
+          - accepted_values: 
+              values: ['male', 'female']
