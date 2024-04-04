@@ -12,7 +12,7 @@ stg_students as (
 ),
 stu_races as (
     select * from {{ ref('stg_ef3__stu_ed_org__races') }}
-    where school_year = {{ var('oneroster:active_school_year') }}
+    where api_year = {{ var('oneroster:active_school_year') }}
 ),
 race_pivot as (
     select 
