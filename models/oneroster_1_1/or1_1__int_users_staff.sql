@@ -63,7 +63,7 @@ staff_orgs as (
 staff_orgs_agg as (
     select 
         k_staff,
-        listagg({{ gen_sourced_id('school') }}, ',') as orgs
+        listagg(distinct {{ gen_sourced_id('school') }}, ',') as orgs
     from staff_orgs
     group by all
 ),
@@ -90,6 +90,7 @@ formatted as (
         null::string as "password",
         {{ gen_natural_key('staff') }} as "metadata.edu.natural_key",
         staff_role.staff_classification as "metadata.edu.staff_classification",
+        null::string as "metadata.edu.primary_school",
         dim_staff.tenant_code
     from dim_staff
     join user_ids 

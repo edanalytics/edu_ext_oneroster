@@ -43,6 +43,7 @@ student_orgs as (
         dim_school.k_lea,
         dim_school.k_school,
         dim_school.school_id,
+        {{ gen_sourced_id('school') }} as sourced_id,
         student_school.tenant_code
     from student_school
     join dim_school 
@@ -51,8 +52,10 @@ student_orgs as (
 student_orgs_agg as (
     select 
         k_student,
-        k_lea,
-        listagg({{ gen_sourced_id('school') }}, ',') as orgs
+        listagg(distinct sourced_id, ',') as orgs,
+        -- create columns for primary school extension
+        max_by(sourced_id, is_primary_school, 1)[0] as primary_school_sourced_id,
+        max_by(sourced_id, entry_date, 1)[0] as latest_school_sourced_id
     from student_orgs
     group by all
 ),
@@ -71,7 +74,7 @@ formatted as (
         true as "enabledUser", 
         student_orgs_agg.orgs as "orgSourcedIds",
         'student' as "role",
-        null::varchar as "username",
+        student_email.email_address as "username",
         user_ids.ids as "userIds",
         dim_student.first_name as "givenName",
         dim_student.last_name as "familyName",
@@ -85,11 +88,11 @@ formatted as (
         null::string as "password",
         student_keys.natural_key as "metadata.edu.natural_key",
         null::string as "metadata.edu.staff_classfication",
+        coalesce(student_orgs_agg.primary_school_sourced_id, student_orgs_agg.latest_school_sourced_id) as "metadata.edu.primary_school",
         dim_student.tenant_code
     from dim_student
     join student_keys 
         on dim_student.k_student = student_keys.k_student
-    -- note that this join expands the grain by district in certain cases
     left join student_orgs_agg
         on dim_student.k_student = student_orgs_agg.k_student
     left join user_ids
