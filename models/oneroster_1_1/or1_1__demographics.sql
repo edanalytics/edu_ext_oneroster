@@ -17,17 +17,20 @@ stu_races as (
 race_pivot as (
     select 
         k_student,
-        {{ edu_wh.alias_pivot(
-            column='race',
-            cmp_col_name='edfi_race_code',
-            alias_col_name='oneroster_race_code',
-            xwalk_ref='xwalk_oneroster_races',
+        {{ edu_wh.ea_pivot(
+            column='oneroster_race_code',
+            values=['americanIndianOrAlaskaNative', 
+                    'asian', 
+                    'blackOrAfricanAmerican', 
+                    'nativeHawaiianOrOtherPacificIslander', 
+                    'white'],
             cast='boolean',
-            null_false=True,
             quote_identifiers=True
           )
         }}
     from stu_races
+    left join {{ ref('xwalk_oneroster_races') }}
+        on stu_races.race = xwalk_oneroster_races.edfi_race_code
     group by all
 ),
 student_keys as (
