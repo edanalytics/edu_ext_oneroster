@@ -12,7 +12,7 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-  
+
 models:
   edu_ext_oneroster:
     oneroster_1_1:
