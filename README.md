@@ -107,7 +107,7 @@ Templates for required seed files are located in the [seed_templates](seed_templ
 - Columns:
   - `session_name`: Comes from the Ed-Fi Sessions resource, Session Name field.
   - `type`: Must be one of the [OneRoster sessionType](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452027) list of values (gradingPeriod, semester, schoolYear, term).
-
+ 
 2. Classroom Positions Primary Teacher Mapping
 - File name: `xwalk_oneroster_classroom_positions.csv`
 - Columns:
@@ -126,12 +126,37 @@ Templates for required seed files are located in the [seed_templates](seed_templ
   - `staff_classification`: Comes from the Ed-Fi Staff Ed Org Assignment Associations resource, Staff Classification field.
   - `oneroster_role`: Must be one of the [OneRoster RoleType](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452025) list of values (administrator, aide, guardian, parent, proctor, relative, student, teacher).
 
+5. Race Mapping
+- File name: `xwalk_oneroster_races.csv`
+- Columns: 
+  - `edfi_race_code`: Values in the Ed-Fi RaceDescriptor
+  - `oneroster_race_code`: Must be one of the [Oneroster Race](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452012) values (americanIndianOrAlaskaNative, asian, blackOrAfricanAmerican, nativeHawaiianOrOtherPacificIslander, white).
+
+6. Gender Mapping 
+- File name: `xwalk_oneroster_gender.csv`
+- Columns: 
+  - `edfi_gender_code`: Values in the Ed-Fi SexDescriptor.
+  - `oneroster_sex_code`: Must be one of the [Oneroster Gender](http://www.imsglobal.org/oneroster-v11-final-specification#_Toc480452020) list of values (male, female).
+
+
 ## Configuration variables
 `oneroster:id_prefix`: A prefix to be included in all sourcedIds. By default this is just `tenant_code`, but this can be overridden if a single unique string value is desired for all tenants.
 
 `oneroster:active_school_year`: The school-year on which to build OneRoster files. This should be rotated at year-rollover time, when incoming data from the school year that's about to begin has settled enough to support rostering.
 
 `oneroster:student_email_type`: The email_type that will be preferred for student users. 
+
+`oneroster:demographic_extensions`: Extensions to add to the demographic table. These are
+key-value pairs composed of a column name from `dim_student` and the desired column name in 
+the demographics file, respectively. Note: only columns in `dim_student` can be added here at the moment.
+
+Column names will always begin with `metadata.`, and the specified value will be appended to the end. To follow the typical standard, include `edu.` in the name, but extensions are not forced to use the `edu` namespace. 
+Example:
+```
+'oneroster:demographic_extensions':
+  is_special_education_annual: 'edu.special_education'
+  is_economic_disadvantaged: 'edu.economic_disadvantage'
+```
 
 ## OneRoster extensions
 OneRoster is an extensible standard. Extensions in this package begin with `metadata.edu` and are always on the right-hand side of the table, as specified in the standard.

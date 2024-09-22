@@ -42,6 +42,11 @@ Users are Students, Teachers, and Parents.
 Users are associated with one or more orgs. An extension has been added for StaffClassification.
 {% enddocs %} 
 
+{% docs demographics %}
+Demographic data about students. Can be extended to include additional fields.
+
+{% enddocs %}
+
 {% docs tenant_code %}
 The tenant_code column is included for Row-level security in multi-tenant environments. 
 
