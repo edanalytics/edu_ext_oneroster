@@ -76,7 +76,7 @@
 {%- endmacro %}
 
 {% macro gen_sourced_id(id_type) -%}
-  {{ dbt_utils.surrogate_key(get_key_list(id_type)) }}
+  {{ dbt_utils.generate_surrogate_key(get_key_list(id_type)) }}
 {% endmacro %}
 
 {% macro gen_natural_key(id_type) -%}
