@@ -1,7 +1,7 @@
 config-version: 2
 
 name: 'edu_ext_oneroster'
-version: '0.2.0'
+version: '0.2.1'
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 profile: 'edu_ext_oneroster'
 
