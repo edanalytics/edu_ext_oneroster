@@ -157,7 +157,7 @@ models:
           - accepted_values: 
               values: ['administrator', 'aide', 'guardian', 'parent', 'proctor', 'relative', 'student', 'teacher']
 
-  - name: or1_1__descriptors
+  - name: or1_1__demographics
     description: '{{ doc("demographics") }}'
     config: 
       tags: ['oneroster_1.1']
