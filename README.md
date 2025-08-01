@@ -158,6 +158,15 @@ Example:
   is_economic_disadvantaged: 'edu.economic_disadvantage'
 ```
 
+`oneroster:classroom_positions`: List of Classroom Positions that should allow a staffSectionAssociation to _implicitly_ assign the Teacher role, regardless of their StaffClassification or whether they even have a StaffAssignment at all. This would allow, for example, only provisioning the Teacher of Record, and not Aides, Substitutes, or other roles. 
+This should be a list of approved Classroom Position values, or null to leave unrestricted.
+Example: 
+```yaml
+'oneroster:classroom_positions':
+  - Teacher of Record
+  - Substitute
+```
+
 ## OneRoster extensions
 OneRoster is an extensible standard. Extensions in this package begin with `metadata.edu` and are always on the right-hand side of the table, as specified in the standard.
 
