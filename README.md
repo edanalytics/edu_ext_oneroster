@@ -158,8 +158,9 @@ Example:
   is_economic_disadvantaged: 'edu.economic_disadvantage'
 ```
 
-`oneroster:classroom_positions`: List of Classroom Positions that should allow a staffSectionAssociation to _implicitly_ assign the Teacher role, regardless of their StaffClassification or whether they even have a StaffAssignment at all. This would allow, for example, only provisioning the Teacher of Record, and not Aides, Substitutes, or other roles. 
-This should be a list of approved Classroom Position values, or null to leave unrestricted.
+`oneroster:require_staff_assignment`: Should teaching staff function like all other staff types, in that we require a Staff Assignment with an appropriate Staff Classification? Or should we treat staffSectionAssociation as implicitly assigning the Teacher role, regardless of their StaffClassification or whether they even have a StaffAssignment at all? Default: True
+
+`oneroster:classroom_positions`: Only include Staff-Classroom associations when the staff is listed with an appropriate Classroom Position. This would allow, for example, only including the Teacher of Record, and not Aides, Substitutes, or other roles. This should be a list of approved Classroom Position values, or null to leave unrestricted.
 Example: 
 ```yaml
 'oneroster:classroom_positions':

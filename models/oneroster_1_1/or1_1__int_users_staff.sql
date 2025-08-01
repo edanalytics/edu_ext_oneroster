@@ -35,7 +35,11 @@ staff_role as (
     from staff_school
     left join role_xwalk
         on staff_school.staff_classification = role_xwalk.staff_classification
-    full join teaching_staff 
+    {% if var('oneroster:require_staff_assignment', true) %}
+    left join teaching_staff 
+    {% else %}
+    full outer join teaching_staff 
+    {% endif %}
         on staff_school.k_staff = teaching_staff.k_staff
     -- either in the staff xwalk, or teaches a section
     where (role_xwalk.staff_classification is not null or teaching_staff.k_staff is not null)
