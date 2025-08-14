@@ -53,6 +53,8 @@ user_ids as (
         listagg(concat('{', id_system, ':', id_code, '}'), ',') as ids
     from {{ ref('stg_ef3__staffs__identification_codes') }}
     where api_year = {{ var('oneroster:active_school_year')}}
+      -- explicitly filter out SSNs
+      and id_system not ilike '%ssn%'
     group by all
 ),
 
