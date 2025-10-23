@@ -67,6 +67,7 @@ models:
           combination_of_columns:
             - sourcedId 
             - TENANT_CODE
+            - orgSourcedId
           quote_columns: true
     columns: 
       - name: tenant_code 
