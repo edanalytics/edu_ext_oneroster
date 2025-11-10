@@ -85,7 +85,7 @@ formatted as (
         dim_staff.email_address as "email",
         null::string as "sms",
         null::string as "phone",
-        null::string as "agentSourceIds",
+        null::string as "agentSourcedIds",
         null:string as "grades",
         null::string as "password",
         {{ gen_natural_key('staff') }} as "metadata.edu.natural_key",

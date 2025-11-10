@@ -85,7 +85,7 @@ formatted as (
         student_email.email_address as "email",
         null::string as "sms",
         null::string as "phone",
-        null::string as "agentSourceIds",
+        null::string as "agentSourcedIds",
         grade_level_xwalk.oneroster_grade_level as "grades",
         null::string as "password",
         student_keys.natural_key as "metadata.edu.natural_key",
