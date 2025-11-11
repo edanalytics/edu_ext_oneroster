@@ -41,7 +41,7 @@ select
     sections.classroom_identification_code as "location",
     {{ gen_sourced_id('school') }} as "schoolSourcedId", 
     {{ gen_sourced_id('session') }} as "termSourcedIds",
-    null::varchar as "subject",
+    null::varchar as "subjects",
     null::varchar as "subjectCodes",
     periods.periods as "periods",
     {{ gen_natural_key('class') }} as "metadata.edu.natural_key",
