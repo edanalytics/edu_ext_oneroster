@@ -31,6 +31,15 @@ parent_email as (
                 where='(do_not_publish is null or not do_not_publish)') 
     }}
 ),
+parent_telephone as (
+    {{ 
+        edu_wh.row_pluck(ref('stg_ef3__parents__telephones'),
+                key='k_parent',
+                column='phone_number_type',
+                preferred=var('oneroster:parent_telephone_type', 'Mobile'),
+                where='(do_not_publish is null or not do_not_publish)') 
+    }}
+),
 
 parent_orgs as (
     select 
@@ -100,7 +109,7 @@ formatted as (
         dim_parent.parent_unique_id as "identifier",
         parent_email.email_address as "email",
         null::string as "sms",
-        null::string as "phone",
+        parent_telephone.phone_number as "phone",
         parent_students_agg.students as "agentSourcedIds",
         null::string as "grades",
         null::string as "password",
@@ -117,5 +126,7 @@ formatted as (
         on dim_parent.k_parent = parent_students_agg.k_parent
     left join parent_email
         on dim_parent.k_parent = parent_email.k_parent
+    left join parent_telephone
+        on dim_parent.k_parent = parent_telephone.k_parent
 )
 select * from formatted

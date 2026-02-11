@@ -144,7 +144,11 @@ Templates for required seed files are located in the [seed_templates](seed_templ
 
 `oneroster:active_school_year`: The school-year on which to build OneRoster files. This should be rotated at year-rollover time, when incoming data from the school year that's about to begin has settled enough to support rostering.
 
+`oneroster:include_parents`: Boolean, whether or not to include parents in `users`. If true, users with role `parent` will include the `sourcedIds` of students to which they're associated in `agentSourcedIds`; likewise users with role `student` will include the `sourcedIds` of parents to which they're associated in `agentSourcedIds`. (Default is false.)
+
 `oneroster:student_email_type`: The email_type that will be preferred for student users. 
+
+`oneroster:parent_telephone_type`: The phone_number_type that will be preferred for parent users. 
 
 `oneroster:demographic_extensions`: Extensions to add to the demographic table. These are
 key-value pairs composed of a column name from `dim_student` and the desired column name in 
