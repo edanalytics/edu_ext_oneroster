@@ -12,16 +12,7 @@ student_school as (
     select * from {{ ref('fct_student_school_association') }}
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
-{% if var('oneroster:include_parents', False) %}
-dim_parent as (
-    select * exclude tenant_code from {{ ref('dim_parent') }}
-    where school_year = {{ var('oneroster:active_school_year')}}
-),
-student_parent as (
-    select * exclude tenant_code from {{ ref('fct_student_parent_association') }}
-    where school_year = {{ var('oneroster:active_school_year')}}
-),
-{% endif %}
+
 dim_school as (
     select * exclude tenant_code from {{ ref('dim_school') }}
 ),
@@ -76,13 +67,11 @@ student_orgs_agg as (
 student_parents as (
     select 
         dim_student.k_student,
-        {{ gen_sourced_id('parent') }} as sourced_id,
+        parent_sourced_id as sourced_id,
         dim_student.tenant_code
     from dim_student
-    join student_parent
-        on student_parent.k_student = dim_student.k_student
-    join dim_parent
-        on dim_parent.k_parent = student_parent.k_parent
+    join {{ ref('or1_1__int_student_parent_bridge') }} student_parent_bridge
+        on dim_student.k_student = student_parent_bridge.k_student
 ),
 student_parents_agg as (
     select 

@@ -12,29 +12,22 @@ student_school as (
     select * exclude tenant_code from {{ ref('fct_student_school_association') }}
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
-student_parent as (
-    select * exclude tenant_code from {{ ref('fct_student_parent_association') }}
-    where school_year = {{ var('oneroster:active_school_year')}}
-),
 dim_school as (
     select * exclude tenant_code from {{ ref('dim_school') }}
 ),
-dim_student as (
-    select * exclude tenant_code from {{ ref('dim_student') }}
-),
 parent_email as (
     {{ 
-        edu_wh.row_pluck(ref('stg_ef3__parents__emails'),
-                key='k_parent',
+        edu_wh.row_pluck(ref('stg_ef3__contacts__emails'),
+                key='k_contact',
                 column='email_type',
-                preferred=var('oneroster:student_email_type', 'Home/Personal'),
+                preferred=var('oneroster:parent_email_type', 'Home/Personal'),
                 where='(do_not_publish is null or not do_not_publish)') 
     }}
 ),
 parent_telephone as (
     {{ 
-        edu_wh.row_pluck(ref('stg_ef3__parents__telephones'),
-                key='k_parent',
+        edu_wh.row_pluck(ref('stg_ef3__contacts__telephones'),
+                key='k_contact',
                 column='phone_number_type',
                 preferred=var('oneroster:parent_telephone_type', 'Mobile'),
                 where='(do_not_publish is null or not do_not_publish)') 
@@ -52,10 +45,10 @@ parent_orgs as (
         student_school.entry_date,
         dim_parent.tenant_code
     from dim_parent
-    join student_parent
-        on dim_parent.k_parent = student_parent.k_parent
+    join {{ ref('or1_1__int_student_parent_bridge') }} student_parent_bridge
+        on dim_parent.k_parent = student_parent_bridge.k_parent
     join student_school
-        on student_school.k_student = student_parent.k_student
+        on student_school.k_student = student_parent_bridge.k_student
     join dim_school 
         on student_school.k_school = dim_school.k_school
 ),
@@ -70,13 +63,11 @@ parent_orgs_agg as (
 parent_students as (
     select 
         dim_parent.k_parent,
-        {{ gen_sourced_id('student') }} as sourced_id,
+        student_sourced_id as sourced_id,
         dim_parent.tenant_code
     from dim_parent
-    join student_parent
-        on dim_parent.k_parent = student_parent.k_parent
-    join dim_student
-        on student_parent.k_student = dim_student.k_student
+    join {{ ref('or1_1__int_student_parent_bridge') }} student_parent_bridge
+        on dim_parent.k_parent = student_parent_bridge.k_parent
 ),
 parent_students_agg as (
     select 
@@ -125,8 +116,8 @@ formatted as (
     left join parent_students_agg
         on dim_parent.k_parent = parent_students_agg.k_parent
     left join parent_email
-        on dim_parent.k_parent = parent_email.k_parent
+        on dim_parent.k_parent = parent_email.k_contact
     left join parent_telephone
-        on dim_parent.k_parent = parent_telephone.k_parent
+        on dim_parent.k_parent = parent_telephone.k_contact
 )
 select * from formatted
