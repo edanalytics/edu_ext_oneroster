@@ -12,6 +12,7 @@ student_school as (
     select * from {{ ref('fct_student_school_association') }}
     where school_year = {{ var('oneroster:active_school_year')}}
 ),
+
 dim_school as (
     select * exclude tenant_code from {{ ref('dim_school') }}
 ),
@@ -61,6 +62,26 @@ student_orgs_agg as (
     from student_orgs
     group by all
 ),
+
+{% if var('oneroster:include_parents', False) %}
+student_parents as (
+    select 
+        dim_student.k_student,
+        parent_sourced_id as sourced_id,
+        dim_student.tenant_code
+    from dim_student
+    join {{ ref('or1_1__int_student_parent_bridge') }} student_parent_bridge
+        on dim_student.k_student = student_parent_bridge.k_student
+),
+student_parents_agg as (
+    select 
+        k_student,
+        listagg(distinct sourced_id, ',') as parents
+    from student_parents
+    group by all
+),
+{% endif %}
+
 student_keys as (
     select 
         k_student,
@@ -85,7 +106,11 @@ formatted as (
         student_email.email_address as "email",
         null::string as "sms",
         null::string as "phone",
+        {% if var('oneroster:include_parents', False) %}
+        student_parents_agg.parents as "agentSourcedIds",
+        {% else %}
         null::string as "agentSourcedIds",
+        {% endif%}
         grade_level_xwalk.oneroster_grade_level as "grades",
         null::string as "password",
         student_keys.natural_key as "metadata.edu.natural_key",
@@ -97,6 +122,10 @@ formatted as (
         on dim_student.k_student = student_keys.k_student
     left join student_orgs_agg
         on dim_student.k_student = student_orgs_agg.k_student
+    {% if var('oneroster:include_parents', False) %}
+    left join student_parents_agg
+        on dim_student.k_student = student_parents_agg.k_student
+    {% endif %}
     left join user_ids
         on dim_student.k_student = user_ids.k_student
     left join student_email
