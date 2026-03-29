@@ -20,24 +20,31 @@ teaching_staff as (
     select distinct k_staff  
     from {{ ref('fct_staff_section_association') }}
     where school_year = {{ var('oneroster:active_school_year')}}
+    {% if var('oneroster:classroom_positions', '') %}
+        and classroom_position in ('{{ var("oneroster:classroom_positions", "") | join("', '") }}')
+    {% endif %}
 ),
 role_xwalk as (
     select * from {{ ref('xwalk_oneroster_staff_classifications') }}
 ),
 staff_role as (
     select 
-        staff_school.k_staff,
+        coalesce(staff_school.k_staff, teaching_staff.k_staff) as k_staff_coalesce,
         coalesce(oneroster_role, 'teacher') as oneroster_role,
         coalesce(staff_school.staff_classification, 'Teacher') as staff_classification
     from staff_school
     left join role_xwalk
         on staff_school.staff_classification = role_xwalk.staff_classification
+    {% if var('oneroster:require_staff_assignment', true) %}
     left join teaching_staff 
+    {% else %}
+    full outer join teaching_staff 
+    {% endif %}
         on staff_school.k_staff = teaching_staff.k_staff
     -- either in the staff xwalk, or teaches a section
     where (role_xwalk.staff_classification is not null or teaching_staff.k_staff is not null)
     -- only one role per staff. if multiple, prefer admin over teacher
-    qualify 1 = row_number() over(partition by staff_school.k_staff order by oneroster_role)
+    qualify 1 = row_number() over(partition by k_staff_coalesce order by oneroster_role)
 ),
 
 user_ids as (
@@ -46,6 +53,8 @@ user_ids as (
         listagg(concat('{', id_system, ':', id_code, '}'), ',') as ids
     from {{ ref('stg_ef3__staffs__identification_codes') }}
     where api_year = {{ var('oneroster:active_school_year')}}
+      -- explicitly filter out SSNs
+      and id_system not ilike '%ssn%'
     group by all
 ),
 
@@ -96,7 +105,7 @@ formatted as (
     left join user_ids 
         on dim_staff.k_staff = user_ids.k_staff
     join staff_role
-        on dim_staff.k_staff = staff_role.k_staff
+        on dim_staff.k_staff = staff_role.k_staff_coalesce
     left join staff_orgs_agg 
         on dim_staff.k_staff = staff_orgs_agg.k_staff
 )
