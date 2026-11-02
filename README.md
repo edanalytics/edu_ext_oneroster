@@ -2,7 +2,7 @@
 OneRoster CSV standard in the EDU framework
 
 ## License
-This package is free to use for noncommercial purposes. 
+Mozilla Public License Version 2.0
 See [License](LICENSE.md).
 
 ## Implementation notes
