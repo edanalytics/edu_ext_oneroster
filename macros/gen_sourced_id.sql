@@ -1,3 +1,6 @@
+-- SPDX-FileCopyrightText: 2022 Education Analytics
+-- SPDX-License-Identifier: MPL-2.0
+
 {% macro get_key_list(id_type) -%}
   {% set prefix = var('oneroster:id_prefix', 'tenant_code') %}
     

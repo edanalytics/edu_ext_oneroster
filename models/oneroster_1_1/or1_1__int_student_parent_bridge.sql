@@ -1,3 +1,6 @@
+-- SPDX-FileCopyrightText: 2022 Education Analytics
+-- SPDX-License-Identifier: MPL-2.0
+
 {#
     This "bridge" table is used by both int_users_parent and int_users_student
     to link students and parents (via the OneRoster agentSourcedIds).
