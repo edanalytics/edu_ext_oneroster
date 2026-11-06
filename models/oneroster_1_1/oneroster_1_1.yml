@@ -15,18 +15,20 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: type
         quote: true 
         tests: 
-          - accepted_values: 
-              values: ['gradingPeriod', 'semester', 'schoolYear', 'term']
+          - accepted_values:
+              arguments:
+                values: ['gradingPeriod', 'semester', 'schoolYear', 'term']
 
           
   - name: or1_1__classes
@@ -35,10 +37,11 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
@@ -46,19 +49,22 @@ models:
         quote: true
         tests:
           - relationships:
-              to: ref('or1_1__courses')
-              field: '"sourcedId"'
+              arguments:
+                to: ref('or1_1__courses')
+                field: '"sourcedId"'
       - name: schoolSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__orgs')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__orgs')
+                field: '"sourcedId"'
       - name: classType
         quote: true 
         tests: 
-          - accepted_values: 
-              values: ['homeroom', 'scheduled']
+          - accepted_values:
+              arguments:
+                values: ['homeroom', 'scheduled']
 
 
   - name: or1_1__courses
@@ -67,26 +73,29 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-            - orgSourcedId
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+              - orgSourcedId
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: orgSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__orgs')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__orgs')
+                field: '"sourcedId"'
       - name: schoolYearSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__academic_sessions')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__academic_sessions')
+                field: '"sourcedId"'
 
 
   - name: or1_1__enrollments
@@ -95,31 +104,35 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: classSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__classes')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__classes')
+                field: '"sourcedId"'
       - name: schoolSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__orgs')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__orgs')
+                field: '"sourcedId"'
       - name: userSourcedId
         quote: true
         tests:
-          - relationships: 
-              to: ref('or1_1__users')
-              field: '"sourcedId"'
+          - relationships:
+              arguments:
+                to: ref('or1_1__users')
+                field: '"sourcedId"'
  
  
   - name: or1_1__orgs
@@ -128,18 +141,20 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: type
         quote: true 
         tests: 
-          - accepted_values: 
-              values: ['department', 'school', 'district', 'local', 'state', 'national']
+          - accepted_values:
+              arguments:
+                values: ['department', 'school', 'district', 'local', 'state', 'national']
 
 
   - name: or1_1__users
@@ -148,18 +163,20 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: role
         quote: true 
         tests: 
-          - accepted_values: 
-              values: ['administrator', 'aide', 'guardian', 'parent', 'proctor', 'relative', 'student', 'teacher']
+          - accepted_values:
+              arguments:
+                values: ['administrator', 'aide', 'guardian', 'parent', 'proctor', 'relative', 'student', 'teacher']
 
   - name: or1_1__demographics
     description: '{{ doc("demographics") }}'
@@ -167,15 +184,17 @@ models:
       tags: ['oneroster_1.1']
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - sourcedId 
-            - TENANT_CODE
-          quote_columns: true
+          arguments:
+            combination_of_columns:
+              - sourcedId 
+              - TENANT_CODE
+            quote_columns: true
     columns: 
       - name: tenant_code 
         description: '{{ doc("tenant_code") }}'
       - name: sex
         quote: true 
         tests: 
-          - accepted_values: 
-              values: ['male', 'female']
+          - accepted_values:
+              arguments:
+                values: ['male', 'female']
